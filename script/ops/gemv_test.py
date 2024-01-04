@@ -12,7 +12,7 @@ from quant_dequant import generate_quant
 
 ### test settings (Z must be 1 for GEMV testing)
 Z = 1
-DIM1 = 11008
+DIM1 = 4096
 DIM2 = 4096
 
 ### benchmark settings
@@ -217,25 +217,23 @@ ed6_dur = torch.tensor(
     dtype=torch.float,
 )
 
-
+print(f"M = {Z}, N = {DIM1}, K = {DIM2}")
+print(f"Torch.linear\t\tCost time : {torch.mean(ref_dur).item()}")
 print(
-    '%s %s %s %s %s %s %d %d %d %.4f %.4f %.4f %.4f %.4f %.4f %.4f'
-    % (
-        bool(ed1_all_close),
-        bool(ed2_all_close),
-        bool(ed3_all_close),
-        bool(ed4_all_close),
-        bool(ed5_all_close),
-        bool(ed6_all_close),
-        Z,
-        DIM1,
-        DIM2,
-        torch.mean(ref_dur).item(),
-        torch.mean(ed1_dur).item(),
-        torch.mean(ed2_dur).item(),
-        torch.mean(ed3_dur).item(),
-        torch.mean(ed4_dur).item(),
-        torch.mean(ed5_dur).item(),
-        torch.mean(ed6_dur).item(),
-    )
+    f"Fastgemv-2line:{bool(ed1_all_close)}\tCost time : {torch.mean(ed1_dur).item()}"
+)
+print(
+    f"Fastgemv-fp32:{bool(ed2_all_close)}\tCost time : {torch.mean(ed2_dur).item()}"
+)
+print(
+    f"Fastgemv-dbuffer:{bool(ed3_all_close)}\tCost time : {torch.mean(ed3_dur).item()}"
+)
+print(
+    f"Fastgemv-db-2line:{bool(ed4_all_close)}\tCost time : {torch.mean(ed4_dur).item()}"
+)
+print(
+    f"Fastgemv-quant4:{bool(ed5_all_close)}\tCost time : {torch.mean(ed5_dur).item()}"
+)
+print(
+    f"Fastgemv-q4-lop3:{bool(ed6_all_close)}\tCost time : {torch.mean(ed6_dur).item()}"
 )
